@@ -16,5 +16,8 @@
   "license": "ISC",
   "peerDependencies": {
     "babel-core": "^5.0.0"
+  },
+  "devDependencies": {
+    "babel-core": "^5.0.0"
   }
 }
