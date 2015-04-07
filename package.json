@@ -4,7 +4,7 @@
   "description": "An experimental babel transformer plugin for Angular 2 type annotation",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node test"
   },
   "keywords": [
     "babel",
