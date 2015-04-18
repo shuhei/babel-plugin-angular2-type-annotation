@@ -26,16 +26,19 @@ module.exports = new Transformer('angular2-type-annotation', {
       }
     });
     if (annotations.length > 0) {
-      var array = t.arrayExpression(annotations.map(function (annotation) {
+      var types = t.arrayExpression(annotations.map(function (annotation) {
         return t.arrayExpression([t.identifier(annotation)]);
       }));
-      var propertyName = t.memberExpression(classRef, t.identifier('parameters'), false);
-      var assignment = t.expressionStatement(t.assignmentExpression('=', propertyName, array));
-      if (parent.type === 'ExportNamedDeclaration') {
-        this.parentPath.replaceWithMultiple([parent, assignment]);
+      var defineProperty = t.expressionStatement(t.callExpression(
+        file.addHelper('define-property'),
+        [classRef, t.literal('parameters'), types]
+      ));
+      if (parent.type === 'ExportNamedDeclaration' || parent.type === 'ExportDefaultDeclaration') {
+        this.parentPath.replaceWithMultiple([parent, defineProperty]);
       } else {
-        return [node, assignment];
+        return [node, defineProperty];
       }
     }
   }
 });
+

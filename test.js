@@ -9,10 +9,11 @@ function test(fixtureName) {
   var fixture = fs.readFileSync(path.resolve('fixtures', fixtureName, 'fixture.js')).toString();
   var expected = fs.readFileSync(path.resolve('fixtures', fixtureName, 'expected.js')).toString();
   var actual = babel.transform(fixture, {
-    plugins: ['./index']
+    plugins: ['./index'],
+    externalHelpers: true
   }).code;
   assert.equal(actual + '\n', expected);
 }
 
 test('normal-class');
-test('export-class');
+test('export-named-class');
