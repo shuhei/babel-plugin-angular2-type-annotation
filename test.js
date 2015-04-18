@@ -17,3 +17,4 @@ function test(fixtureName) {
 
 test('normal-class');
 test('export-named-class');
+test('export-default-class');
