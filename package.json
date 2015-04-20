@@ -1,6 +1,6 @@
 {
   "name": "babel-plugin-angular2-type-annotation",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "An experimental babel transformer plugin for Angular 2 type annotation",
   "repository": "shuhei/babel-plugin-angular2-type-annotation",
   "main": "index.js",
