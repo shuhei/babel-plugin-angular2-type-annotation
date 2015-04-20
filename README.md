@@ -12,7 +12,7 @@ Before:
 
 ```js
 class HelloComponent {
-  constructor(foo: Foo, bar: Bar) {
+  constructor(@Parent() foo: Foo, bar: Bar) {
   }
 }
 ```
@@ -25,7 +25,7 @@ class HelloComponent {
   }
 }
 Object.defineProperty(HelloComponent, 'parameters', { get: function () {
-  return [[Foo], [Bar]];
+  return [[Foo, new Parent()], [Bar]];
 }});
 ```
 

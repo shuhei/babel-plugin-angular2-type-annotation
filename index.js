@@ -1,3 +1,4 @@
+require('./patch');
 var babel = require('babel-core');
 var t = babel.types;
 var Transformer = babel.Transformer;
@@ -7,32 +8,14 @@ module.exports = new Transformer('angular2-type-annotation', {
     var classRef = node.id;
     var className = classRef.name;
     var classBody = node.body.body;
-    var annotations = [];
+    var annotations;
     classBody.forEach(function (bodyNode) {
       if (bodyNode.type === 'MethodDefinition' && bodyNode.kind === 'constructor') {
-        var params = bodyNode.value.params;
-        params.forEach(function (param) {
-          var annotation = param.typeAnnotation && param.typeAnnotation.typeAnnotation;
-          if (!annotation) {
-            return;
-          }
-          if (annotation.type !== 'GenericTypeAnnotation') {
-            console.log(annotation);
-            throw new Error('Type annotation for constructor should be GenericTypeAnnotation: ' + annotation.type);
-          }
-          // TODO: annotation.typeParameters such as List<Foo>
-          annotations.push(annotation.id.name);
-        });
+        annotations = ignoreEmpty(parameterAnnotations(bodyNode.value.params));
       }
     });
-    if (annotations.length > 0) {
-      var types = t.arrayExpression(annotations.map(function (annotation) {
-        return t.arrayExpression([t.identifier(annotation)]);
-      }));
-      var defineProperty = t.expressionStatement(t.callExpression(
-        file.addHelper('define-property'),
-        [classRef, t.literal('parameters'), types]
-      ));
+    if (annotations) {
+      var defineProperty = defineAnnotations(annotations, file, classRef);
       if (parent.type === 'ExportNamedDeclaration' || parent.type === 'ExportDefaultDeclaration') {
         this.parentPath.replaceWithMultiple([parent, defineProperty]);
       } else {
@@ -42,3 +25,42 @@ module.exports = new Transformer('angular2-type-annotation', {
   }
 });
 
+function parameterAnnotations(params) {
+  return params.map(function (param) {
+    var annotation = param.typeAnnotation && param.typeAnnotation.typeAnnotation;
+    var decorators = param.decorators;
+    var item = [];
+    if (annotation) {
+      if (annotation.type !== 'GenericTypeAnnotation') {
+        throw new Error('Type annotation for constructor should be GenericTypeAnnotation: ' + annotation.type);
+      }
+      // TODO: Support annotation.typeParameters such as List<Foo>
+      item.push(t.identifier(annotation.id.name));
+    }
+    if (decorators) {
+      var news = decorators.map(function (decorator) {
+        var call = decorator.expression;
+        return t.newExpression(call.callee, call.arguments);
+      });
+      item = item.concat(news);
+    }
+    return item;
+  });
+}
+
+function ignoreEmpty(annotations) {
+  var allEmpty = annotations.reduce(function (acc, annotation) {
+    return acc && annotations.length === 0;
+  }, true);
+  return allEmpty ? null : annotations;
+}
+
+function defineAnnotations(annotations, file, classRef) {
+  var types = t.arrayExpression(annotations.map(function (item) {
+    return t.arrayExpression(item);
+  }));
+  return t.expressionStatement(t.callExpression(
+    file.addHelper('define-property'),
+    [classRef, t.literal('parameters'), types]
+  ));
+}

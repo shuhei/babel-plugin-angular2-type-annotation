@@ -9,5 +9,5 @@ var HelloComponent = function HelloComponent(foo, bar) {
 };
 
 exports["default"] = HelloComponent;
-babelHelpers.defineProperty(HelloComponent, "parameters", [[Foo], [Bar]]);
+babelHelpers.defineProperty(HelloComponent, "parameters", [[Foo, new Yes(), new No()], [Bar]]);
 module.exports = exports["default"];

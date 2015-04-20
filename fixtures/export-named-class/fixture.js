@@ -1,4 +1,4 @@
 export class HelloComponent {
-  constructor(foo: Foo, bar: Bar) {
+  constructor(@Yes() @No() foo: Foo, bar: Bar) {
   }
 }
