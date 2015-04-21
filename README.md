@@ -2,7 +2,9 @@
 [![npm version](https://img.shields.io/npm/v/babel-plugin-angular2-type-annotation.svg)](https://www.npmjs.org/package/babel-plugin-angular2-type-annotation)
 [![npm downloads](https://img.shields.io/npm/dm/babel-plugin-angular2-type-annotation.svg)](https://www.npmjs.org/package/babel-plugin-angular2-type-annotation)
 
-# babel-plugin-angular2-type-annotation
+# [Deprecated] babel-plugin-angular2-type-annotation
+
+**This project has been merged into [babel-plugin-angular2-annotations](https://github.com/shuhei/babel-plugin-angular2-annotations)**.
 
 An **experimental** babel transformer plugin for Angular 2 type annotation.
 
